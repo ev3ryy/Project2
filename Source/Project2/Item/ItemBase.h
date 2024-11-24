@@ -10,7 +10,8 @@ UENUM()
 enum class EItemType : uint8
 {
 	None = 0,
-	Cloth
+	Cloth,
+	Meet
 };
 
 USTRUCT(BlueprintType)

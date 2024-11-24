@@ -75,6 +75,7 @@ protected:
 	void OnFire();
 
 	void OnRepair();
+	void OnHeal();
 
 	UFUNCTION(BlueprintCallable)
 	void OnPickup(AItem* item);

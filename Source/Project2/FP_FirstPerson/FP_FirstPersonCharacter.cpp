@@ -63,6 +63,7 @@ void AFP_FirstPersonCharacter::SetupPlayerInputComponent(class UInputComponent* 
 	
 	PlayerInputComponent->BindAction("Fire", IE_Pressed, this, &AFP_FirstPersonCharacter::OnFire);
 	PlayerInputComponent->BindAction("Repair", IE_Pressed, this, &AFP_FirstPersonCharacter::OnRepair);
+	PlayerInputComponent->BindAction("Heal", IE_Pressed, this, &AFP_FirstPersonCharacter::OnHeal);
 
 	PlayerInputComponent->BindAxis("MoveForward", this, &AFP_FirstPersonCharacter::MoveForward);
 	PlayerInputComponent->BindAxis("MoveRight", this, &AFP_FirstPersonCharacter::MoveRight);
@@ -112,7 +113,6 @@ void AFP_FirstPersonCharacter::OnRepair()
 					UE_LOG(LogTemp, Log, TEXT("Remove item: %s"), *row_name.ToString());
 					return;
 				}
-				return;
 			}
 			else
 			{
@@ -123,6 +123,34 @@ void AFP_FirstPersonCharacter::OnRepair()
 	
 	UE_LOG(LogTemp, Log, TEXT("failed to find cloth for repair armor"));
 }
+
+void AFP_FirstPersonCharacter::OnHeal()
+{
+	for(const FName& row_name : inventory_component->inventory)
+	{
+		const FItemBase* item = inventory_component->GetItemData(row_name);
+		if(item && item->item_type == EItemType::Meet)
+		{
+			if(health < max_health)
+			{
+				if(inventory_component->RemoveItem(row_name))
+				{
+					health = max_health;
+					UE_LOG(LogTemp, Log, TEXT("Current health: %f"), health);
+					UE_LOG(LogTemp, Log, TEXT("Remove item: %s"), *row_name.ToString());
+					return;
+				}
+			}
+			else
+			{
+				UE_LOG(LogTemp, Log, TEXT("character doesn`t need heal"));
+			}
+		}
+	}
+
+	UE_LOG(LogTemp, Log, TEXT("failed to find meet for heal character"));
+}
+
 
 void AFP_FirstPersonCharacter::OnPickup(AItem* item)
 {
